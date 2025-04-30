@@ -47,3 +47,71 @@ GROUP BY c.nombre, c.apellido;
 SELECT DISTINCT m.id_mesa, m.ubicacion, m.num_comensales
 FROM factura f
 JOIN mesa m ON f.id_mesa = m.id_mesa;
+
+-- CREATE VIEW
+
+-- 1. Cree una vista (VIEW) que presente del consumo de cada cliente (nombre, bebida, platillo, fecha y montos).
+CREATE VIEW vista_consumo_cliente AS
+SELECT 
+    c.nombre AS nombre_cliente,
+    c.apellido AS apellido_cliente,
+    b.nombre AS bebida,
+    p.nombre AS platillo,
+    f.fecha_factura,
+    COALESCE(p.importe, 0) AS monto_platillo,
+    b.importe AS monto_bebida
+FROM factura f
+JOIN cliente c ON f.id_cliente = c.id_cliente
+JOIN bebida b ON f.id_bebida = b.id_bebida
+LEFT JOIN platillo p ON f.id_platillo = p.id_platillo;
+
+-- 2. Cree una vista (VIEW) que presente el mesero, el numero de factura que atendió, la fecha y la mesa.
+CREATE VIEW vista_mesero_factura AS
+SELECT 
+    m.nombre AS nombre_mesero,
+    m.apellido1 AS apellido1,
+    m.apellido2 AS apellido2,
+    f.id_factura,
+    f.fecha_factura,
+    me.id_mesa
+FROM factura f
+JOIN mesero m ON f.id_mesero = m.id_mesero
+JOIN mesa me ON f.id_mesa = me.id_mesa;
+
+-- 3. Cree una vista (VIEW) que el valor total de compra por cada cliente en todas sus facturas (platillo + bebida).
+CREATE VIEW vista_total_compra_cliente AS
+SELECT 
+    c.nombre,
+    c.apellido,
+    SUM(COALESCE(p.importe, 0) + b.importe) AS total_compras
+FROM factura f
+JOIN cliente c ON f.id_cliente = c.id_cliente
+LEFT JOIN platillo p ON f.id_platillo = p.id_platillo
+JOIN bebida b ON f.id_bebida = b.id_bebida
+GROUP BY c.nombre, c.apellido;
+
+-- 4. Conviera a vista las consultas 6 y 7 del anterior ejercicio
+-- (Consulta 6) Total consumo del cliente "Manuel Pedroza Gonzalez"
+CREATE VIEW vista_total_manuel_pedroza AS
+SELECT 
+    c.nombre, 
+    c.apellido, 
+    SUM(COALESCE(p.importe, 0) + b.importe) AS total_consumo
+FROM factura f
+JOIN cliente c ON f.id_cliente = c.id_cliente
+LEFT JOIN platillo p ON f.id_platillo = p.id_platillo
+JOIN bebida b ON f.id_bebida = b.id_bebida
+WHERE c.nombre = 'Manuel' AND c.apellido = 'Pedroza Gonzalez'
+GROUP BY c.nombre, c.apellido;
+
+-- (Consulta 7) Mesas que han sido utilizadas al menos una vez
+CREATE VIEW vista_mesas_utilizadas AS
+SELECT DISTINCT 
+    m.id_mesa,
+    m.ubicacion,
+    m.num_comensales
+FROM factura f
+JOIN mesa m ON f.id_mesa = m.id_mesa;
+
+
+
