@@ -3,7 +3,7 @@ CREATE TABLE cliente (
     nombre VARCHAR(30) NOT NULL,
     apellido VARCHAR(30) NOT NULL,
     observaciones VARCHAR(60) NOT NULL,
-	CONSTRAINT pk_cliente PRIMARY KEY(id_cliente),
+	CONSTRAINT pk_cliente PRIMARY KEY(id_cliente)
 );
 
 CREATE TABLE Mesero (
@@ -27,7 +27,7 @@ CREATE TABLE bebida (
     nombre VARCHAR(30) NOT NULL,
     importe INT NOT NULL,
 	CONSTRAINT pk_bebida PRIMARY KEY(id_bebida),
-	CHECK (importe >= 0),
+	CHECK (importe >= 0)
 );
 
 CREATE TABLE mesa (
@@ -51,5 +51,5 @@ CREATE TABLE factura (
 	FOREIGN KEY (id_mesero) REFERENCES Mesero(id_mesero) ON UPDATE CASCADE ON DELETE SET NULL,
 	FOREIGN KEY (id_mesa) REFERENCES Mesa(id_mesa) ON UPDATE CASCADE ON DELETE SET NULL,
  	FOREIGN KEY (id_platillo) REFERENCES Platillo(id_platillo) ON UPDATE CASCADE ON DELETE SET NULL,
-	FOREIGN KEY (id_bebida) REFERENCES Bebida(id_bebida) ON UPDATE CASCADE ON DELETE SET NULL,
+	FOREIGN KEY (id_bebida) REFERENCES Bebida(id_bebida) ON UPDATE CASCADE ON DELETE SET NULL
 );
